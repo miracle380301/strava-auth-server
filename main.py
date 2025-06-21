@@ -15,6 +15,7 @@ REPLIT_BACKEND_URL = os.getenv("REPLIT_BACKEND_URL")
 def login():
     print("@@@@ [Render] login @@@@")
     redirect_url = f"https://www.strava.com/oauth/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&approval_prompt=auto&scope=activity:read"
+    print(f"@@@@ [Render] : {redirect_url}")
     return RedirectResponse(
         url= redirect_url
     )
