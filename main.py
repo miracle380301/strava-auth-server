@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta
-from fastapi import FastAPI, Request
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
+from urllib.parse import urlencode
 import requests
 import os
 
@@ -47,5 +47,9 @@ def callback(code: str):
     if send_res.status_code != 200:
         return {"error": "Failed to send token to backend"}
 
+    params = urlencode({"athlete_id": athlete_id})
+    redirect_url_with_param = f"{REPLIT_FRONT_URL}?{params}"
+
+
     # 프론트엔드로 리다이렉트 (예: 로그인 성공 페이지)
-    return RedirectResponse(REPLIT_FRONT_URL)
+    return RedirectResponse(redirect_url_with_param)
