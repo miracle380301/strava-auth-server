@@ -10,6 +10,7 @@ CLIENT_ID = os.getenv("STRAVA_CLIENT_ID")
 CLIENT_SECRET = os.getenv("STRAVA_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
 REPLIT_BACKEND_URL = os.getenv("REPLIT_BACKEND_URL")
+REPLIT_FRONT_URL = os.getenv("REPLIT_FRONT_URL")
 
 @app.get("/login")
 def login():
@@ -47,5 +48,4 @@ def callback(code: str):
         return {"error": "Failed to send token to backend"}
 
     # 프론트엔드로 리다이렉트 (예: 로그인 성공 페이지)
-    frontend_url = "https://your-frontend-url.com/strava-success"
-    return RedirectResponse(frontend_url)
+    return RedirectResponse(REPLIT_FRONT_URL)
