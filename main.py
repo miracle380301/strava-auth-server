@@ -52,4 +52,4 @@ def callback(code: str):
 
 
     # 프론트엔드로 리다이렉트 (예: 로그인 성공 페이지)
-    return RedirectResponse(REPLIT_FRONT_URL)
+    return RedirectResponse(redirect_url_with_param)
