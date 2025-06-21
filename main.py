@@ -14,7 +14,6 @@ REPLIT_BACKEND_URL = os.getenv("REPLIT_BACKEND_URL")
 @app.get("/login")
 def login():
     print("@@@@ [Render] login @@@@")
-    print(os.environ)
     redirect_url = f"https://www.strava.com/oauth/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&approval_prompt=auto&scope=activity:read"
     print(f"@@@@ [Render] : {redirect_url}")
     return RedirectResponse(
@@ -32,6 +31,7 @@ def callback(code: str):
     })
     token_data = token_res.json()
     access_token = token_data.get("access_token")
+    print(f"@@@@ [Render] : access_token :  {access_token}")
 
     if not access_token:
         return {"error": "Failed to get access token"}
