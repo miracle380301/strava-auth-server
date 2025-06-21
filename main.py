@@ -31,7 +31,8 @@ def callback(code: str):
     })
     token_data = token_res.json()
     access_token = token_data.get("access_token")
-    print(f"@@@@ [Render] : access_token :  {token_data}")
+    print(f"@@@@ [Render] : data :  {token_data}")
+    print(f"@@@@ [Render] : access_token :  {access_token}")
 
     if not access_token:
         return {"error": "Failed to get access token"}
