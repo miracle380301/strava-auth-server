@@ -8,7 +8,7 @@ app = FastAPI()
 
 CLIENT_ID = os.getenv("STRAVA_CLIENT_ID")
 CLIENT_SECRET = os.getenv("STRAVA_CLIENT_SECRET")
-REDIRECT_URI = os.getenv("REDIRECT_URI", "https://127.0.0.1/callback")
+REDIRECT_URI = os.getenv("REDIRECT_URI")
 
 @app.get("/login")
 def login():
@@ -19,6 +19,7 @@ def login():
 
 @app.get("/callback")
 def callback(request: Request, code: str):
+    print("@@@@ callback @@@@")
     # Strava에 토큰 요청
     token_res = requests.post("https://www.strava.com/oauth/token", data={
         "client_id": CLIENT_ID,
