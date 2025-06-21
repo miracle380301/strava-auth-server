@@ -31,14 +31,17 @@ def callback(code: str):
     })
     token_data = token_res.json()
     access_token = token_data.get("access_token")
-    print(f"@@@@ [Render] : data :  {token_data}")
+    athlete_id = None
+    if "athlete" in token_data:
+        athlete_id = token_data["athlete"].get("id")    
     print(f"@@@@ [Render] : access_token :  {access_token}")
+    print(f"@@@@ [Render] : athlete_id :  {athlete_id}")
 
     if not access_token:
         return {"error": "Failed to get access token"}
 
     # Replit 백엔드로 토큰 전달 (POST)
-    send_res = requests.post(REPLIT_BACKEND_URL, json={"access_token": access_token})
+    send_res = requests.post(REPLIT_BACKEND_URL, json={"access_token": access_token, "athlete_id": athlete_id})
 
     if send_res.status_code != 200:
         return {"error": "Failed to send token to backend"}
