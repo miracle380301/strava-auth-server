@@ -9,18 +9,19 @@ app = FastAPI()
 CLIENT_ID = os.getenv("STRAVA_CLIENT_ID")
 CLIENT_SECRET = os.getenv("STRAVA_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
+REPLIT_BACKEND_URL = os.getenv("REPLIT_BACKEND_URL")
 
 @app.get("/login")
 def login():
-    print("@@@@ here login @@@@")
+    print("@@@@ [Render] login @@@@")
+    redirect_url = f"https://www.strava.com/oauth/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&approval_prompt=auto&scope=activity:read"
     return RedirectResponse(
-        url=f"https://www.strava.com/oauth/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&approval_prompt=auto&scope=activity:read"
+        url= redirect_url
     )
 
 @app.get("/callback")
-def callback(request: Request, code: str):
-    print("@@@@ callback @@@@")
-    # Strava에 토큰 요청
+def callback(code: str):
+    print("@@@@ [Render] callback @@@@")
     token_res = requests.post("https://www.strava.com/oauth/token", data={
         "client_id": CLIENT_ID,
         "client_secret": CLIENT_SECRET,
@@ -31,25 +32,14 @@ def callback(request: Request, code: str):
     access_token = token_data.get("access_token")
 
     if not access_token:
-        return JSONResponse(content={"error": "Failed to get access token"}, status_code=400)
+        return {"error": "Failed to get access token"}
 
-    # 30일 전 타임스탬프 계산
-    thirty_days_ago = datetime.now() - timedelta(days=30)
-    after_timestamp = int(thirty_days_ago.timestamp())
+    # Replit 백엔드로 토큰 전달 (POST)
+    send_res = requests.post(REPLIT_BACKEND_URL, json={"access_token": access_token})
 
-    # 활동 정보 요청 (30일 이후)
-    activities_res = requests.get(
-        "https://www.strava.com/api/v3/athlete/activities",
-        headers={
-            "Authorization": f"Bearer {access_token}"
-        },
-        params={
-            "after": after_timestamp
-        }
-    )
+    if send_res.status_code != 200:
+        return {"error": "Failed to send token to backend"}
 
-    activities = activities_res.json()
-
-    print(f"@@ activities : {activities}")
-
-    return JSONResponse(content={"activities": activities})
+    # 프론트엔드로 리다이렉트 (예: 로그인 성공 페이지)
+    frontend_url = "https://your-frontend-url.com/strava-success"
+    return RedirectResponse(frontend_url)
