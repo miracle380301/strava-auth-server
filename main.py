@@ -1,16 +1,35 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 from urllib.parse import urlencode
+
 import requests
 import os
-
-app = FastAPI()
 
 CLIENT_ID = os.getenv("STRAVA_CLIENT_ID")
 CLIENT_SECRET = os.getenv("STRAVA_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
 REPLIT_BACKEND_URL = os.getenv("REPLIT_BACKEND_URL")
 REPLIT_FRONT_URL = os.getenv("REPLIT_FRONT_URL")
+
+app = FastAPI()
+
+allow_origins=[
+    REPLIT_FRONT_URL,
+    "capacitor://localhost",  # 안드로이드 앱용 (Capacitor 쓸 경우)
+    "http://localhost:3000",   # 로컬 테스트용
+    REDIRECT_URI
+],
+
+# 임시로 모든 origin 허용 → 테스트용
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 배포 시에는 '*' 대신 실제 도메인으로 제한
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/login")
 def login():
